@@ -81,9 +81,17 @@ function bindMouseEvents() {
 
 function bindKeyboardEvents() {
   document.addEventListener('keydown', (evt) => {
+
+    if (!isActive) {
+      if (evt.key === 'Enter') {
+        screenEl.focus();
+      }
+      return;
+    }
+
     evt.preventDefault();
 
-    if (!isActive || evt.repeat) {
+    if (evt.repeat) {
       return;
     }
 

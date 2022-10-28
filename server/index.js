@@ -30,13 +30,15 @@ const serialport = new SerialPort({
   baudRate: 19200,
 });
 
+console.log('serialport ready');
+
 function writeSerial(numArr) {
   const buf = Buffer.from(numArr);
-  console.log(buf);
   serialport.write(buf);
 }
 
 wsInstance.on('connection', function connection(ws) {
+  console.log('new ws connection');
   ws.on('message', function message(data) {
     const msg = JSON.parse(data.toString());
     switch (msg.type) {

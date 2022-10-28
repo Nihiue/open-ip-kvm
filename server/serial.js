@@ -1,14 +1,23 @@
 const { SerialPort } = require('serialport');
-const config = require('./config.json');
 
-const serialport = new SerialPort({
-  path: config.serialport,
-  baudRate: 19200,
-});
+let serialport;
 
-console.log(`serialport ready: ${config.serialport}`);
-
-module.exports.writeSerial = function writeSerial(numArr) {
+function writeSerial(numArr) {
   const buf = Buffer.from(numArr);
   serialport.write(buf);
+}
+
+module.exports.startSerial = function(portPath) {
+  if (serialport) {
+    return;
+  }
+
+  serialport = new SerialPort({
+    path: portPath,
+    baudRate: 19200,
+  });
+
+  console.log(`serialport ready: ${portPath}`);
+
+  return writeSerial;
 }

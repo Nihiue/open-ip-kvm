@@ -1,28 +1,41 @@
-
 const { spawn } = require('child_process');
-const config = require('./config.json');
 
-module.exports.init = function init() {
-  const shell = exec('mjpg_streamer', [
-    '-i',
-    `input_uvc.so -d ${config.mjpg_streamer.device} -r ${config.mjpg_streamer.res} -f ${config.mjpg_streamer.fps}`,
-    '-o',
-    `output_http.so -p 8010`
-  ], {
-    shell: true
-  });
+let shell;
 
-  shell.stdout.on('data', (data) => {
-    console.log(`mjpg_streamer stdout: ${data}`);
-  });
+function startMJPGStreamer(opt) {
+  if (shell) {
+    return;
+  }
 
-  ls.stderr.on('data', (data) => {
-    console.error(`mjpg_streamer stderr: ${data}`);
-  });
+  return new Promise((resolve, reject) => {
+    let output = '';
+    const cmd = [
+      'mjpg_streamer',
+      '-i',
+      `'input_uvc.so -d ${opt.device} -r ${opt.res} -f ${opt.fps}'`,
+      '-o',
+      `'output_http.so -p 8010'`,
+    ].join(' ');
 
-  shell.on('close', (code) => {
-    console.log(`mjpg_streamer exited with code ${code}`);
+    shell = spawn('bash', ['-c', cmd]);
+
+    shell.stdout.on('data', (data) => {
+      output += data;
+    });
+
+    shell.stderr.on('data', (data) => {
+      output += data;
+      if (data.indexOf('o: HTTP TCP port........:') > -1) {
+        resolve(shell);
+        console.log('mjpg_streamer ready');
+      }
+    });
+
+    shell.on('close', (code) => {
+      console.log(output);
+      reject(new Error(`mjpg_streamer exited with code ${code}`));
+    });
   });
 }
 
-init();
+module.exports.startMJPGStreamer = startMJPGStreamer;

@@ -5,8 +5,16 @@ Build your own open-source ip-kvm device
 
 ## Start
 
+Start mjpg_streamer
+
 ```
-mjpg_streamer -i 'input_uvc.so -d /dev/video0 -r 1920x1080 -f 30' -o 'output_http.so -p 8010
+npm run start-mjpg-streamer
+```
+
+Start server
+
+```
+npm run start-
 ```
 
 TODO:

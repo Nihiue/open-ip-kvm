@@ -3,18 +3,17 @@
 Build your own open-source ip-kvm device
 
 
+## Dependency
+
+[mjpg_streamer](https://github.com/jacksonliam/mjpg-streamer)
+
+
 ## Start
 
-Start mjpg_streamer
-
 ```
-npm run start-mjpg-streamer
+npm run start
 ```
 
-Start server
+--------
 
-```
-npm run start-
-```
-
-TODO:
+TODO

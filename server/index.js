@@ -26,7 +26,7 @@ server.on('upgrade', function upgrade(request, socket, head) {
 });
 
 const serialport = new SerialPort({
-  path: 'COM2',
+  path: '/dev/ttyUSB0',
   baudRate: 19200,
 });
 

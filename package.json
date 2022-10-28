@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node server/index.js",
-    "start-mjpg-streamer": "mjpg_streamer -i 'input_uvc.so -d /dev/video0 -r 1920x1080 -f 30' -o 'output_http.so -p 8010"
+    "mjpg": "bash start-mjpg-streamer.sh"
   },
   "author": "Nihiue",
   "license": "ISC",

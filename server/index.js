@@ -1,44 +1,16 @@
 const path = require('path');
 const url = require('url');
 
+const config = require("./config.json");
+
 const ws = require('ws');
 const Koa = require('koa');
-const app = new Koa();
-const { SerialPort } = require('serialport');
+const KoaStaic = require('koa-static');
 
-app.use(require('koa-static')(path.join(__dirname, '../public')));
+const { writeSerial } = require('./serial.js');
 
-const server = app.listen(8000);
-console.log('listen on 8000...');
-
-const wsInstance = new ws.WebSocketServer({ noServer: true });
-
-server.on('upgrade', function upgrade(request, socket, head) {
-  const { pathname } = url.parse(request.url);
-
-  if (pathname === '/websocket') {
-    wsInstance.handleUpgrade(request, socket, head, function done(ws) {
-      wsInstance.emit('connection', ws, request);
-    });
-  } else {
-    socket.destroy();
-  }
-});
-
-const serialport = new SerialPort({
-  path: '/dev/ttyUSB0',
-  baudRate: 19200,
-});
-
-console.log('serialport ready');
-
-function writeSerial(numArr) {
-  const buf = Buffer.from(numArr);
-  serialport.write(buf);
-}
-
-wsInstance.on('connection', function connection(ws) {
-  console.log('new ws connection');
+function websocketHandler(ws) {
+  console.log('new websocket connection');
   ws.on('message', function message(data) {
     const msg = JSON.parse(data.toString());
     switch (msg.type) {
@@ -52,4 +24,26 @@ wsInstance.on('connection', function connection(ws) {
     type: 'welcome',
     payload: 'Open IP-KVM Server'
   }));
+}
+
+
+const app = new Koa();
+app.use(KoaStaic(path.join(__dirname, '../public')));
+
+const server = app.listen(config.listen_port);
+console.log(`listen on ${config.listen_port}...`);
+
+const wsInstance = new ws.WebSocketServer({ noServer: true });
+server.on('upgrade', function upgrade(request, socket, head) {
+  const { pathname } = url.parse(request.url);
+
+  if (pathname === '/websocket') {
+    wsInstance.handleUpgrade(request, socket, head, function done(ws) {
+      wsInstance.emit('connection', ws, request);
+    });
+  } else {
+    socket.destroy();
+  }
 });
+
+wsInstance.on('connection', websocketHandler);

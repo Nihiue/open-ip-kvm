@@ -1,0 +1,18 @@
+{
+  "name": "open-ip-kvm",
+  "version": "1.0.0",
+  "description": "Build your own open-source ip-kvm device",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "start-mpej": "mjpg_streamer -i 'input_uvc.so -d /dev/video0 -r 1920x1080 -f 30' -o 'output_http.so -p 8010"
+  },
+  "author": "Nihiue",
+  "license": "ISC",
+  "dependencies": {
+    "koa": "^2.13.4",
+    "koa-static": "^5.0.0",
+    "serialport": "^10.4.0",
+    "ws": "^8.10.0"
+  }
+}

@@ -1,0 +1,46 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="none">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Open IP-KVM</title>
+  <style>
+    body, html {
+      padding: 0;
+      margin: 0;
+      background: #000;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    .screen {
+      user-select: none;
+      filter: grayscale(1);
+      max-height: 100vh;
+      max-width: 100vw;
+      width: 100%;
+      display: block;
+      height: auto;
+      margin: auto;
+      outline: none;
+    }
+    .screen:focus {
+      outline: none;
+      filter: none;
+    }
+  </style>
+</head>
+
+<body id="app">
+  <img class="screen" tabindex="1">
+  <script type="module" src="./app.mjs"></script>
+
+  <script nomodule>
+    alert('Opps, 你的浏览器比较旧, 页面无法正常显示');
+  </script>
+</body>
+
+</html>

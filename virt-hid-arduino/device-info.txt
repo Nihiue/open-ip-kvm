@@ -1,0 +1,6 @@
+
+Arduino Leonardo
+
+https://docs.arduino.cc/hardware/leonardo
+
+The ATmega32U4 has built-in USB communication that allows the Micro to appear as a mouse/keyboard on your machine.

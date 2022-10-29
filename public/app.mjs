@@ -5,8 +5,7 @@ import * as mouse from './mouse.mjs';
 const channel = await ws.init(`ws://${location.host}/websocket`);
 const screenEl = document.querySelector('.screen');
 
-// screenEl.src = `http://${location.hostname}:8010/?action=stream`;
-screenEl.src = `http://10.0.0.235:8010/?action=stream`;
+screenEl.src = `http://${location.hostname}:8010/?action=stream`;
 
 let isActive = false;
 let pointLocked = false;

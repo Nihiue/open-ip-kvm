@@ -91,7 +91,7 @@ export function sendEvent(channel, key, type) {
   channel.send(JSON.stringify(msg));
 }
 
-function sendSeqBuf(channel, buf) {
+function sendSeqBuf(buf, channel) {
   buf.unshift(KEY_SEQUENCE_EVT_START);
   buf.push(EVT_END);
   channel.send(JSON.stringify({

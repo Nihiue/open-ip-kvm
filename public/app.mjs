@@ -50,7 +50,7 @@ new Vue({
     bindKeyHandler() {
       document.addEventListener('keydown', (evt) => {
         if (!this.isKeyCaptureActive) {
-          if (evt.key === 'Enter') {
+          if (evt.key === 'Enter' && !this.activeDialog) {
             this.setScreenFocus(true);
           }
           return;
@@ -102,6 +102,7 @@ new Vue({
       kb.sendEvent(this.$channel, '', 'reset');
     },
     onScreenFocus() {
+      this.setDialog();
       this.isKeyCaptureActive = true;
       kb.sendEvent(this.$channel, '', 'reset');
     },
@@ -113,6 +114,7 @@ new Vue({
       const screen = document.querySelector('.screen');
       if (bool) {
         try {
+          this.setDialog();
           screen.requestPointerLock();
         } catch (e) {}
       } else {

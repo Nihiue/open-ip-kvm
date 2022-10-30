@@ -2,6 +2,12 @@
 
 This project provides an open-source IP-KVM solution.
 
+Related article:
+
+[DIY 一个运维神器 Open IP-KVM](https://zhuanlan.zhihu.com/p/578602475)
+
+[English Version By Google Translate](https://zhuanlan-zhihu-com.translate.goog/p/578602475?_x_tr_sl=auto&_x_tr_tl=zh-CN&_x_tr_hl=en&_x_tr_pto=wapp)
+
 ## What is IP-KVM
 
 KVM Over IP (IP-KVM) is a hardware based solution for remote access to your computer or server.
@@ -10,10 +16,10 @@ The unit plugs into the Keyboard, Video and Mouse ports of a computer or server 
 
 <!-- ![kvm](https://user-images.githubusercontent.com/5763301/198827953-2509f245-0274-4556-9f3e-969b4b33a728.png) -->
 
-### KVM vs RD software(VNC/RDP/TeamViewer)
+### IP-KVM vs RD software(VNC/RDP/TeamViewer)
 
 * RD software requires a working OS, and must be pre-configured. It often fails in an emergency situation
-* KVM is out-of-band, so it can be used to install OS, setup BIOS or fix low-level issues
+* IP-KVM is out-of-band, so it can be used to install OS, setup BIOS or fix low-level issues
 
 ## Features
 
@@ -33,7 +39,7 @@ The unit plugs into the Keyboard, Video and Mouse ports of a computer or server 
 
 * HDMI-USB capture device
   * Recommendation: `MS2109` [link](https://item.jd.com/100021347850.html)
-  * HDMI-input: Up to 3840*2160 30 FPS
+  * Input: Up to 3840*2160 30 FPS
   * Output: Up to 1080P 30 FPS @ MJPEG
 * Linux single-board computer
   * Recommendation: [Raspberry Pi 4](https://www.raspberrypi.com/products/raspberry-pi-4-model-b/), `Phicomm N1`
@@ -49,32 +55,63 @@ The unit plugs into the Keyboard, Video and Mouse ports of a computer or server 
     * If linux sbc has no built-in Wi-Fi
 
 
-## Deployment and Usage
+## Deploy and Run
 
 ### 1. Clone Repo
 ```
 git clone https://github.com/Nihiue/open-ip-kvm.git
 ```
 
-### 2. Program Arduino Leonardo
+### 2. Prepare Arduino Leonardo
 
-* Download and install [Arduino IDE](https://www.arduino.cc/en/software/)
-* Connect leonardo to computer via USB
-* Open `open-ip-kvm/virt-hid-arduino/virt-hid-arduino.ino`, compile and upload the program
+<details>
+
+<summary>Upload program</summary>
+
+
+1. Download and install [Arduino IDE](https://www.arduino.cc/en/software/)
+2. Connect leonardo to computer via USB
+3. Open `open-ip-kvm/virt-hid-arduino/virt-hid-arduino.ino`,  click `Sketch/Upload (Ctrl + U)`
+4. Disconnect USB
+
+</details>
+
+<details>
+
+<summary>Connect serial port</summary>
+
+![image](https://user-images.githubusercontent.com/5763301/198872791-cbac6e09-562a-43ae-82fb-a5533461d36b.png)
+
+![serial](https://user-images.githubusercontent.com/5763301/198873347-8bade4fc-e682-4f46-a115-ec6dc4e09d22.jpg)
+
+</details>
 
 ### 3. Prepare Linux SBC
+
+<details>
+
+<summary>Install Dependency</summary>
 
 * Build and Install MJPG-Streamer
   * See [mjpg_streamer](https://github.com/jacksonliam/mjpg-streamer)
 * Install Node.js 14.x+
-* Install dependency
+* Install node app dependency
   * `cd open-ip-kvm && npm install`
+</details>
+
+
+<details>
+
+<summary>Connect IO and edit config</summary>
+
 * Connect IO
   * HDMI-USB capture device via USB
-  * Arduino Leonardo via serial port or USB-to-TTL Adapter
+  * Arduino Leonardo via native serial port or USB-TTL adapter
 * Edit `open-ip-kvm/server/config.json`
   * `mjpg_streamer.device`: path of HDMI-USB capture device
   * `serialport`: path of serial port
+
+</details>
 
 
 ### 4. Run

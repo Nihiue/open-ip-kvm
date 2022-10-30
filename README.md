@@ -26,10 +26,10 @@ The unit plugs into the Keyboard, Video and Mouse ports of a computer or server 
 * Web browser as client
 * 1080P 30fps video stream
 * Full mouse & keyboard support
-* Low latency
-* Highly customizable
+* UI Indicator
+* Remote Paste: Quickly input ASCII characters
 
-![Untitled](https://user-images.githubusercontent.com/5763301/198835717-8bb81f27-1a05-46c1-a0b0-1006a6ce29e7.png)
+![screenshot](https://user-images.githubusercontent.com/5763301/198885015-f1cd83d7-6717-410c-8837-68b347f4b29c.png)
 
 ## System Diagram
 

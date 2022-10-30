@@ -18,14 +18,12 @@ function bindScreenFocusEvents() {
       document.exitPointerLock();
     }
     kb.sendEvent(channel, '', 'reset');
-    mouse.sendEvent(channel, '', 'reset');
   });
 
   screenEl.addEventListener('focus', () => {
     isActive = true;
     console.log('isActive = true');
     kb.sendEvent(channel, '', 'reset');
-    mouse.sendEvent(channel, '', 'reset');
   });
 }
 
@@ -37,6 +35,7 @@ function bindMouseEvents() {
   document.addEventListener('pointerlockchange', (evt) => {
     pointLocked = document.pointerLockElement === screenEl;
     console.log('pointLocked', pointLocked);
+    mouse.sendEvent(channel, '', 'reset');
   });
 
   screenEl.addEventListener('mousemove', (evt) => {

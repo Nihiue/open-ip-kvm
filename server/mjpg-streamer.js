@@ -33,6 +33,7 @@ function startMJPGStreamer(opt) {
     });
 
     shell.on('close', (code) => {
+      console.log(output);
       reject(new Error(`mjpg_streamer exited with code ${code}`));
     });
   });

@@ -3,6 +3,7 @@
 
 #define KB_EVT_START 248
 #define MOUSE_EVT_START 249
+#define KEY_SEQUENCE_EVT_START 250
 #define EVT_END 251
 
 #define KB_EVT_TYPE_KEYDOWN 1
@@ -20,9 +21,11 @@
 #define MOUSE_EVT_TYPE_RESET 9
 #define MOUSE_EVT_TYPE_CONFIG_MOVE_FACTOR 10
 
+#define R_BUF_LEN 32
+
 bool led = false;
 
-int rBuf[6];
+int rBuf[R_BUF_LEN];
 int rBufCursor = 0;
 int mouseMoveFactor = 1;
 
@@ -32,9 +35,7 @@ void blink() {
 }
 void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
-  pinMode(2, INPUT);
   digitalWrite(LED_BUILTIN, LOW);
-  randomSeed(analogRead(5));
 
   Keyboard.begin();
   Mouse.begin();
@@ -92,33 +93,44 @@ void parse_r_buf() {
         mouseMoveFactor = rBuf[2];
     }
   }
+
+  if (rBuf[0] == KEY_SEQUENCE_EVT_START && rBufCursor > 1) {
+      Keyboard.releaseAll();
+      for (int i = 1; i < rBufCursor; i += 1) {
+          Keyboard.write(rBuf[i]);
+      }
+  }
 }
 
 void reset_r_buf() {
    rBufCursor = 0;
    rBuf[0] = 0;
-   rBuf[1] = 0;
-   rBuf[2] = 0;
-   rBuf[3] = 0;
-   rBuf[4] = 0;
-   rBuf[5] = 0;
 }
 
 void loop() {
   int curVal;
   while (Serial1.available() > 0) {
     curVal = Serial1.read();
-
+    
     if (curVal == EVT_END) {
       parse_r_buf();
       blink();
       reset_r_buf();
-    } else if (rBufCursor == 0 && (curVal == KB_EVT_START || curVal == MOUSE_EVT_START)) {
-      rBuf[rBufCursor] = curVal;
-      rBufCursor += 1;
-    } else if (rBufCursor > 0 and rBufCursor < 6) {
-      rBuf[rBufCursor] = curVal;
-      rBufCursor += 1;
+    } else {
+      if (rBufCursor == 0) {
+        if (curVal == KB_EVT_START || curVal == MOUSE_EVT_START || curVal == KEY_SEQUENCE_EVT_START) {
+          rBuf[rBufCursor] = curVal;
+          rBufCursor += 1;
+        }
+      } else {
+        if (rBufCursor < R_BUF_LEN) {
+           rBuf[rBufCursor] = curVal;
+           rBufCursor += 1;
+        } else {
+          // overflow, reset rBuf
+          rBuf[0] = 0;
+        }
+      }
     }
   }
 }

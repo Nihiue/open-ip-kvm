@@ -120,4 +120,8 @@ function bindKeyboardEvents() {
     }
     kb.sendEvent(channel, evt.key, 'keyup');
   });
+
+  window.testSeq = function (s) {
+    kb.sendSequence(channel, s);
+  }
 }

@@ -1,5 +1,6 @@
 
 const KB_EVT_START = 248;
+const KEY_SEQUENCE_EVT_START = 250;
 const EVT_END = 251;
 
 const KB_EVT_TYPE_KEYDOWN = 1;
@@ -41,7 +42,7 @@ function isChar(key) {
   if (!key || key.length > 1) {
     return false;
   }
-  const keyAscii = key.charCodeAt(0);
+  const keyAscii = key.codePointAt(0);
   return keyAscii >= 32 && keyAscii <= 126;
 }
 
@@ -72,7 +73,7 @@ export function sendEvent(channel, key, type) {
   if (type === 'reset') {
     payload[2] = 0;
   } else if (isChar(key)) {
-    payload[2] = key.charCodeAt(0);
+    payload[2] = key.codePointAt(0);
   } else if (keyRemap[key]) {
     payload[2] = keyRemap[key];
   } else {
@@ -88,4 +89,39 @@ export function sendEvent(channel, key, type) {
 
   // console.log(type, key, payload[2]);
   channel.send(JSON.stringify(msg));
+}
+
+function sendSeqBuf(channel, buf) {
+  buf.unshift(KEY_SEQUENCE_EVT_START);
+  buf.push(EVT_END);
+  channel.send(JSON.stringify({
+    type: 'write_serial',
+    payload: buf
+  }));
+}
+
+export function sendSequence(channel, str) {
+  if (str.length > 8192) {
+    return alert('sequence is too long')
+  }
+
+  let buf = [];
+
+  for (let i = 0; i < str.length; i += 1) {
+    if (isChar(str[i])) {
+      buf.push(str[i]);
+    } else if (str === '\n') {
+      buf.push(keyRemap.Enter);
+    }
+
+    if (buf.length >= 30) {
+      sendSeqBuf(buf, channel);
+      buf = [];
+    }
+  }
+
+  if (buf.length) {
+    sendSeqBuf(buf, channel);
+  }
+
 }

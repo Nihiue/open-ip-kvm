@@ -109,7 +109,7 @@ export function sendSequence(channel, str) {
 
   for (let i = 0; i < str.length; i += 1) {
     if (isChar(str[i])) {
-      buf.push(str[i]);
+      buf.push(str.codePointAt(i));
     } else if (str === '\n') {
       buf.push(keyRemap.Enter);
     }

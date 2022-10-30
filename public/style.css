@@ -1,0 +1,114 @@
+body, html {
+  padding: 0;
+  margin: 0;
+  background: #000;
+  font-family: "SF Pro Display", "PingFang SC", "Helvetica Neue", "Microsoft YaHei", sans-serif;
+  font-size: 16px;
+  line-height: 1.8;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.screen {
+  user-select: none;
+  max-height: 100vh;
+  max-width: 100vw;
+  width: 100%;
+  display: block;
+  height: auto;
+  margin: auto;
+  outline: none;
+  min-height: 100px;
+}
+
+.screen:focus {
+  outline: none;
+}
+
+.trans-bg {
+  background: rgba(0,0,0, 0.7);
+  border: 1px solid #999;
+  border-radius: 4px;
+  color: #fff;
+}
+
+.float-zone {
+  display: flex;
+  font-size: 12px;
+  text-align: center;
+  min-width: 100px;
+  position: fixed;
+  left: calc(50vw - 100px);
+  top: 12px;
+
+  padding: 4px 8px;
+  border-radius: 4px;
+  justify-content: center;
+  align-items: center;
+}
+
+.float-zone >* {
+  margin: 0 12px;
+}
+
+.indicator, .button {
+  font-size: 20px;
+}
+.button {
+  cursor: pointer;
+}
+
+.indicator.active {
+  color: #14c941;
+}
+
+.dialog {
+  line-height: 1.8;
+  position: fixed;
+  width: 600px;
+  top: 20%;
+  left: calc(50vw - 300px);
+  z-index: 10;
+  padding: 24px;
+  border-radius: 12px;
+}
+
+.dialog-footer {
+  text-align: center;
+  padding: 12px 0;
+}
+
+.dialog-header {
+  text-align: center;
+  margin-bottom: 12px;
+  font-size: 28px;
+}
+.auto>li {
+  margin-bottom: 12px;
+  margin-top: 24px;
+}
+
+.dialog-btn {
+  cursor: pointer;
+  border: 1px solid #fff;
+  background: transparent;
+  color: #fff;
+  text-align: center;
+  min-width: 64px;
+  padding: 8px 12px;
+  margin: 0 12px;
+}
+.dialog-btn:hover, .dialog-btn:active {
+  background: rgba(255,255,255, 0.1);
+}
+
+.remote-paste-textarea {
+  color: #fff;
+  width: 100%;
+  background: rgba(255,255,255, 0.1);
+  height: 320px;
+  overflow: auto;
+  outline: none;
+}

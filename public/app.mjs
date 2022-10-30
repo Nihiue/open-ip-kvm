@@ -2,126 +2,164 @@ import * as ws from './ws.mjs';
 import * as kb from './kb.mjs';
 import * as mouse from './mouse.mjs';
 
-const screenEl = document.querySelector('.screen');
-const streamRoot = `http://${location.hostname}:8010`;
+new Vue({
+  el: '#app',
+  data: {
+    serviceHost: location.hostname,
+    streamSrc: '',
+    $channel: null,
+    isKeyCaptureActive: false,
+    isPointorLocked: false,
+    mouseMoveSlice: [0, 0],
+    activeDialog: '',
+    pasteContent: ''
+  },
+  mounted() {
+    this.init();
+  },
+  methods: {
+    async init() {
+      try {
+        const streamOk = await this.pingStream();
+        if (!streamOk) {
+          throw new Error(
+            'Video stream is not ready, please check mjpeg process'
+          );
+        }
+        this.$channel = await ws.init(
+          `ws://${this.serviceHost}:8000/websocket`
+        );
+        this.bindKeyHandler();
+        this.bindMouseHandler();
 
-let isKeyCaptureActive = false;
-let isPointorLocked = false;
-let channel;
-
-try {
-  const pingRes = await fetch(streamRoot + '/?action=snapshot');
-  if (pingRes.status !== 200) {
-    throw new Error('Video stream is not ready, please check mjpeg process');
-  }
-
-  channel = await ws.init(`ws://${location.host}/websocket`);
-  screenEl.src = streamRoot + `/?action=stream`;
-
-  bindScreenFocusEvents();
-  bindMouseEvents();
-  bindKeyboardEvents();
-} catch (e) {
-  alert(e.toString());
-}
-
-function bindScreenFocusEvents() {
-  screenEl.addEventListener('blur', () => {
-    isKeyCaptureActive = false;
-    console.log('isActive = false');
-    if (isPointorLocked) {
-      document.exitPointerLock();
-    }
-    kb.sendEvent(channel, '', 'reset');
-  });
-
-  screenEl.addEventListener('focus', () => {
-    isKeyCaptureActive = true;
-    console.log('isActive = true');
-    kb.sendEvent(channel, '', 'reset');
-  });
-}
-
-function bindMouseEvents() {
-  mouse.sendEvent(channel, 1, 'config-move-factor');
-
-  const moveSlice = [0, 0];
-
-  document.addEventListener('pointerlockchange', (evt) => {
-    isPointorLocked = document.pointerLockElement === screenEl;
-    console.log('isPointLocked', isPointorLocked);
-    mouse.sendEvent(channel, '', 'reset');
-  });
-
-  screenEl.addEventListener('mousemove', (evt) => {
-    if (!isPointorLocked) {
-      return;
-    }
-    moveSlice[0] += evt.movementX;
-    moveSlice[1] += evt.movementY;
-  });
-
-  screenEl.addEventListener('mousedown', (evt) => {
-    if (!isPointorLocked) {
-      if (evt.button === 0) {
-        screenEl.requestPointerLock();
+        this.streamSrc = `http://${this.serviceHost}:8010/?action=stream`;
+      } catch (e) {
+        alert(e.toString());
       }
-      return;
-    }
-    evt.preventDefault();
-    mouse.sendEvent(channel, evt.button, 'mousedown');
-  });
-
-  screenEl.addEventListener('mouseup', (evt) => {
-    if (!isPointorLocked) {
-      return;
-    }
-    mouse.sendEvent(channel, evt.button, 'mouseup');
-  });
-
-  screenEl.addEventListener('wheel', (evt) => {
-    mouse.sendEvent(channel, evt.wheelDeltaY, 'wheel');
-  });
-
-  window.setInterval(() => {
-    if (moveSlice[0] !== 0 || moveSlice[1] !== 0) {
-      mouse.sendEvent(channel, moveSlice, 'move');
-      moveSlice[0] = 0;
-      moveSlice[1] = 0;
-    }
-  }, 30);
-}
-
-function bindKeyboardEvents() {
-  document.addEventListener('keydown', (evt) => {
-    if (!isKeyCaptureActive) {
-      if (evt.key === 'Enter') {
-        screenEl.focus();
+    },
+    async pingStream() {
+      try {
+        const pingRes = await fetch(
+          `http://${this.serviceHost}:8010/?action=snapshot`
+        );
+        return pingRes.status === 200;
+      } catch (e) {
+        return false;
       }
-      return;
+    },
+    bindKeyHandler() {
+      document.addEventListener('keydown', (evt) => {
+        if (!this.isKeyCaptureActive) {
+          if (evt.key === 'Enter') {
+            this.setScreenFocus(true);
+          }
+          return;
+        }
+
+        evt.preventDefault();
+
+        if (evt.repeat) {
+          return;
+        }
+
+        if (evt.key === 'Escape' && evt.shiftKey) {
+          this.setScreenFocus(false);
+          return;
+        }
+        kb.sendEvent(this.$channel, evt.key, 'keydown');
+      });
+
+      document.addEventListener('keyup', (evt) => {
+        if (!this.isKeyCaptureActive) {
+          return;
+        }
+        kb.sendEvent(this.$channel, evt.key, 'keyup');
+      });
+    },
+    bindMouseHandler() {
+      const mouseMoveSlice = this.mouseMoveSlice;
+
+      document.addEventListener('pointerlockchange', (evt) => {
+        this.isPointorLocked = document.pointerLockElement && document.pointerLockElement.classList.contains('screen');
+        mouse.sendEvent(this.$channel, '', 'reset');
+      });
+
+      window.setInterval(() => {
+        if (mouseMoveSlice[0] !== 0 || mouseMoveSlice[1] !== 0) {
+          mouse.sendEvent(this.$channel, mouseMoveSlice, 'move');
+          mouseMoveSlice[0] = 0;
+          mouseMoveSlice[1] = 0;
+        }
+      }, 30);
+
+      mouse.sendEvent(this.$channel, 1, 'config-move-factor');
+    },
+    onScreenBlur() {
+      this.isKeyCaptureActive = false;
+      if (this.isPointorLocked) {
+        this.setPointerLock(false);
+      }
+      kb.sendEvent(this.$channel, '', 'reset');
+    },
+    onScreenFocus() {
+      this.isKeyCaptureActive = true;
+      kb.sendEvent(this.$channel, '', 'reset');
+    },
+    setScreenFocus(bool) {
+      const screen = document.querySelector('.screen');
+      screen[bool ? 'focus' : 'blur']();
+    },
+    setPointerLock(bool) {
+      const screen = document.querySelector('.screen');
+      if (bool) {
+        try {
+          screen.requestPointerLock();
+        } catch (e) {}
+      } else {
+        document.exitPointerLock()
+      }
+    },
+    onScreenMouseMove(evt) {
+      if (!this.isPointorLocked) {
+        return;
+      }
+      this.mouseMoveSlice[0] += evt.movementX;
+      this.mouseMoveSlice[1] += evt.movementY;
+    },
+    onScreenMouseDown(evt) {
+      if (!this.isPointorLocked) {
+        if (evt.button === 0) {
+          this.setPointerLock(true);
+        }
+        return;
+      }
+      evt.preventDefault();
+      mouse.sendEvent(this.$channel, evt.button, 'mousedown');
+    },
+    onScreenMouseUp(evt) {
+      if (!this.isPointorLocked) {
+        return;
+      }
+      mouse.sendEvent(this.$channel, evt.button, 'mouseup');
+    },
+    onScreenMouseWheel(evt) {
+      if (!this.isPointorLocked) {
+        return;
+      }
+      mouse.sendEvent(this.$channel, evt.wheelDeltaY, 'wheel');
+    },
+    doRemotePaste() {
+      kb.sendSequence(this.$channel, this.pasteContent);
+      this.pasteContent = '';
+    },
+    setDialog(name) {
+      if (name) {
+        this.setPointerLock(false);
+        this.setScreenFocus(false);
+        this.activeDialog = name;
+      } else {
+        this.activeDialog = '';
+      }
     }
-
-    evt.preventDefault();
-
-    if (evt.repeat) {
-      return;
-    }
-
-    if (evt.key === 'Escape' && evt.shiftKey) {
-      screenEl.blur();
-      return;
-    }
-    kb.sendEvent(channel, evt.key, 'keydown');
-  });
-
-  document.addEventListener('keyup', (evt) => {
-    if (!isKeyCaptureActive) {
-      return;
-    }
-    kb.sendEvent(channel, evt.key, 'keyup');
-  });
-
-  window.testSeq = function (s) {
-    kb.sendSequence(channel, s);
-  }
-}
+  },
+});

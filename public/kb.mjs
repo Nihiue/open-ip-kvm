@@ -100,7 +100,13 @@ function sendSeqBuf(buf, channel) {
   }));
 }
 
-export function sendSequence(channel, str) {
+function sleep(ms = 100) {
+  return new Promise(resolve => {
+    setTimeout(resolve, ms);
+  });
+}
+
+export async function sendSequence(channel, str) {
   if (str.length > 8192) {
     return alert('sequence is too long')
   }
@@ -108,15 +114,14 @@ export function sendSequence(channel, str) {
   let buf = [];
 
   for (let i = 0; i < str.length; i += 1) {
-    if (isChar(str[i])) {
+    if (isChar(str[i]) || str[i] === '\n') {
       buf.push(str.codePointAt(i));
-    } else if (str === '\n') {
-      buf.push(keyRemap.Enter);
     }
 
     if (buf.length >= 30) {
       sendSeqBuf(buf, channel);
       buf = [];
+      await sleep(200);
     }
   }
 

@@ -12,9 +12,9 @@ function startMJPGStreamer(opt) {
     const cmd = [
       'mjpg_streamer',
       '-i',
-      `'input_uvc.so -d ${opt.device} -r ${opt.res} -f ${opt.fps}'`,
+      `'input_uvc.so -d ${opt.device} -r ${opt.res} -f ${opt.fps} -n'`,
       '-o',
-      `'output_http.so -p 8010'`,
+      `'output_http.so -p 8010 -n'`,
     ].join(' ');
 
     shell = spawn('bash', ['-c', cmd]);
@@ -25,7 +25,7 @@ function startMJPGStreamer(opt) {
 
     shell.stderr.on('data', (data) => {
       output += data;
-      if (data.indexOf('o: HTTP TCP port........:') > -1) {
+      if (data.indexOf('HTTP TCP port') > -1) {
         resolve(shell);
         console.log('mjpg_streamer ready');
       }

@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8">
-    <meta name="robots" content="none">
+    <meta charset="utf-8" />
+    <meta name="robots" content="none" />
     <meta
       name="viewport"
       content="width=device-width, initial-scale=1.0, user-scalable=no"
@@ -13,88 +13,102 @@
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css"
     />
     <link rel="stylesheet" href="./style.css" />
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.7.13/dist/vue.min.js"></script>
   </head>
 
   <body>
     <div id="app">
-      <img
-        v-if="streamSrc"
-        :src="streamSrc"
-        @focus="onScreenFocus"
-        @blur="onScreenBlur"
-        @mousemove="onScreenMouseMove"
-        @mouseup="onScreenMouseUp"
-        @mousedown="onScreenMouseDown"
-        @wheel="onScreenMouseWheel"
-        class="screen"
-        tabindex="1"
-      />
-      <div v-show="streamSrc" class="float-zone trans-bg">
-        <!-- <div>Open IP-KVM</div> -->
-        <span
-          class="indicator bi-mouse"
-          style="font-size: 22px"
-          :class="{active: isPointorLocked}"
-          title="Mouse Indicator"
-        ></span>
-        <span
-          class="indicator bi-keyboard"
-          style="font-size: 26px"
-          :class="{active: isKeyCaptureActive}"
-          title="Keyboard Indicator"
-        ></span>
-        <span
-          @click="setDialog('paste')"
-          class="button bi-clipboard-data"
-          title="Remote Paste (ASCII Only)"
-        ></span>
-        <span
-          @click="setDialog('help')"
-          class="button bi-question-circle"
-          title="Help"
-        ></span>
+      <div v-show="streamSrc" style="display: none">
+
+        <img
+          v-if="streamSrc"
+          :src="streamSrc"
+          @focus="onScreenFocus"
+          @blur="onScreenBlur"
+          @mousemove="onScreenMouseMove"
+          @mouseup="onScreenMouseUp"
+          @mousedown="onScreenMouseDown"
+          @wheel="onScreenMouseWheel"
+          class="screen"
+          tabindex="1"
+        />
+
+        <div class="float-zone trans-bg">
+          <!-- <div>Open IP-KVM</div> -->
+          <span
+            class="indicator bi-mouse"
+            style="font-size: 22px"
+            :class="{active: isPointorLocked}"
+            title="Mouse Indicator"
+          ></span>
+          <span
+            class="indicator bi-keyboard"
+            style="font-size: 26px"
+            :class="{active: isKeyCaptureActive}"
+            title="Keyboard Indicator"
+          ></span>
+          <span
+            @click="setDialog('paste')"
+            class="button bi-clipboard-data"
+            title="Remote Paste (ASCII Only)"
+          ></span>
+          <span
+            @click="setDialog('help')"
+            class="button bi-question-circle"
+            title="Help"
+          ></span>
+        </div>
+
+        <div v-show="activeDialog === 'help'" class="dialog trans-bg">
+          <div class="dialog-header">Help</div>
+          <ul class="auto">
+            <li>
+              Mouse
+              <ul>
+                <li>Click anywhere to enter pointer capture mode</li>
+                <li>Press <b>ESC</b> to exit</li>
+              </ul>
+            </li>
+            <li>
+              Keyboard
+              <ul>
+                <li>Press <b>Enter</b> to enter key capture mode</li>
+                <li>press <b>Shift + Esc</b> to exit</li>
+              </ul>
+            </li>
+            <li>
+              Remote Paste
+              <ul>
+                <li>Quickly input to remote device</li>
+                <li>ASCII characters only</li>
+              </ul>
+            </li>
+          </ul>
+          <div class="dialog-footer">
+            <button class="dialog-btn" @click="setDialog()">OK</button>
+          </div>
+        </div>
+
+        <div v-show="activeDialog === 'paste'" class="dialog trans-bg">
+          <div class="dialog-header">Remote Paste</div>
+          <textarea
+            v-model="pasteContent"
+            class="remote-paste-textarea"
+          ></textarea>
+          <div class="dialog-footer">
+            <button class="dialog-btn" @click="setDialog(), doRemotePaste()">
+              Paste
+            </button>
+            <button class="dialog-btn" @click="setDialog()">Cancel</button>
+          </div>
+        </div>
+
       </div>
 
-      <div v-show="activeDialog === 'help'" class="dialog trans-bg">
-        <div class="dialog-header">Help</div>
-        <ul class="auto">
-          <li>
-            Mouse
-            <ul>
-              <li>Click anywhere to enter pointer capture mode</li>
-              <li>Press <b>ESC</b> to exit</li>
-            </ul>
-          </li>
-          <li>
-            Keyboard
-            <ul>
-              <li>Press <b>Enter</b> to enter key capture mode</li>
-              <li>press <b>Shift + Esc</b> to exit</li>
-            </ul>
-          </li>
-          <li>
-            Remote Paste
-            <ul>
-              <li>Quickly input to remote device</li>
-              <li>ASCII characters only</li>
-            </ul>
-          </li>
-        </ul>
-        <div class="dialog-footer">
-          <button class="dialog-btn" @click="setDialog()">OK</button>
-        </div>
-      </div>
+      <div v-show="!streamSrc" class="loading">Loading...</div>
 
-      <div v-show="activeDialog === 'paste'" class="dialog trans-bg">
-        <div class="dialog-header">Remote Paste</div>
-        <textarea v-model="pasteContent" class="remote-paste-textarea"></textarea>
-        <div class="dialog-footer">
-          <button class="dialog-btn" @click="setDialog(), doRemotePaste()">Paste</button>
-          <button class="dialog-btn" @click="setDialog()">Cancel</button>
-        </div>
-      </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.7.13/dist/vue.min.js"></script>
 
     <script type="module" src="./app.mjs"></script>
 

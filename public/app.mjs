@@ -5,6 +5,7 @@ import * as mouse from './mouse.mjs';
 new Vue({
   el: '#app',
   data: {
+    // serviceHost: '10.0.0.235',
     serviceHost: location.hostname,
     streamSrc: '',
     $channel: null,
@@ -12,7 +13,7 @@ new Vue({
     isPointorLocked: false,
     mouseMoveSlice: [0, 0],
     activeDialog: '',
-    pasteContent: ''
+    pasteContent: '',
   },
   mounted() {
     this.init();
@@ -80,7 +81,9 @@ new Vue({
       const mouseMoveSlice = this.mouseMoveSlice;
 
       document.addEventListener('pointerlockchange', (evt) => {
-        this.isPointorLocked = document.pointerLockElement && document.pointerLockElement.classList.contains('screen');
+        this.isPointorLocked =
+          document.pointerLockElement &&
+          document.pointerLockElement.classList.contains('screen');
         mouse.sendEvent(this.$channel, '', 'reset');
       });
 
@@ -118,7 +121,7 @@ new Vue({
           screen.requestPointerLock();
         } catch (e) {}
       } else {
-        document.exitPointerLock()
+        document.exitPointerLock();
       }
     },
     onScreenMouseMove(evt) {
@@ -162,6 +165,6 @@ new Vue({
       } else {
         this.activeDialog = '';
       }
-    }
+    },
   },
 });

@@ -112,3 +112,10 @@ body, html {
   overflow: auto;
   outline: none;
 }
+
+.loading {
+  color: #fff;
+  font-size: 26px;
+  text-align: center;
+  padding-top: 45vh;
+}

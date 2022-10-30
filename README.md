@@ -92,8 +92,8 @@ git clone https://github.com/Nihiue/open-ip-kvm.git
 
 <summary>Install Dependency</summary>
 
-* Build and Install MJPG-Streamer
-  * See [mjpg_streamer](https://github.com/jacksonliam/mjpg-streamer)
+* Build and Install [MJPG-Streamer](https://github.com/jacksonliam/mjpg-streamer)
+  * [How to build](https://www.acmesystems.it/video_streaming)
 * Install Node.js 14.x+
 * Install node app dependency
   * `cd open-ip-kvm && npm install`

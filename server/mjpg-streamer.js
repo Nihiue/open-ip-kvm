@@ -26,13 +26,13 @@ function startMJPGStreamer(opt) {
     shell.stderr.on('data', (data) => {
       output += data;
       if (data.indexOf('HTTP TCP port') > -1) {
+        console.log('mjpg_streamer start')
+        console.log(output);
         resolve(shell);
-        console.log('mjpg_streamer ready');
       }
     });
 
     shell.on('close', (code) => {
-      console.log(output);
       reject(new Error(`mjpg_streamer exited with code ${code}`));
     });
   });

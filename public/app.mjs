@@ -2,26 +2,41 @@ import * as ws from './ws.mjs';
 import * as kb from './kb.mjs';
 import * as mouse from './mouse.mjs';
 
-const channel = await ws.init(`ws://${location.host}/websocket`);
 const screenEl = document.querySelector('.screen');
+const streamRoot = `http://${location.hostname}:8010`;
 
-screenEl.src = `http://${location.hostname}:8010/?action=stream`;
+let isKeyCaptureActive = false;
+let isPointorLocked = false;
+let channel;
 
-let isActive = false;
-let pointLocked = false;
+try {
+  const pingRes = await fetch(streamRoot + '/?action=snapshot');
+  if (pingRes.status !== 200) {
+    throw new Error('Video stream is not ready, please check mjpeg process');
+  }
+
+  channel = await ws.init(`ws://${location.host}/websocket`);
+  screenEl.src = streamRoot + `/?action=stream`;
+
+  bindScreenFocusEvents();
+  bindMouseEvents();
+  bindKeyboardEvents();
+} catch (e) {
+  alert(e.toString());
+}
 
 function bindScreenFocusEvents() {
   screenEl.addEventListener('blur', () => {
-    isActive = false;
+    isKeyCaptureActive = false;
     console.log('isActive = false');
-    if (pointLocked) {
+    if (isPointorLocked) {
       document.exitPointerLock();
     }
     kb.sendEvent(channel, '', 'reset');
   });
 
   screenEl.addEventListener('focus', () => {
-    isActive = true;
+    isKeyCaptureActive = true;
     console.log('isActive = true');
     kb.sendEvent(channel, '', 'reset');
   });
@@ -33,13 +48,13 @@ function bindMouseEvents() {
   const moveSlice = [0, 0];
 
   document.addEventListener('pointerlockchange', (evt) => {
-    pointLocked = document.pointerLockElement === screenEl;
-    console.log('pointLocked', pointLocked);
+    isPointorLocked = document.pointerLockElement === screenEl;
+    console.log('isPointLocked', isPointorLocked);
     mouse.sendEvent(channel, '', 'reset');
   });
 
   screenEl.addEventListener('mousemove', (evt) => {
-    if (!pointLocked) {
+    if (!isPointorLocked) {
       return;
     }
     moveSlice[0] += evt.movementX;
@@ -47,7 +62,7 @@ function bindMouseEvents() {
   });
 
   screenEl.addEventListener('mousedown', (evt) => {
-    if (!pointLocked) {
+    if (!isPointorLocked) {
       if (evt.button === 0) {
         screenEl.requestPointerLock();
       }
@@ -58,7 +73,7 @@ function bindMouseEvents() {
   });
 
   screenEl.addEventListener('mouseup', (evt) => {
-    if (!pointLocked) {
+    if (!isPointorLocked) {
       return;
     }
     mouse.sendEvent(channel, evt.button, 'mouseup');
@@ -79,8 +94,7 @@ function bindMouseEvents() {
 
 function bindKeyboardEvents() {
   document.addEventListener('keydown', (evt) => {
-
-    if (!isActive) {
+    if (!isKeyCaptureActive) {
       if (evt.key === 'Enter') {
         screenEl.focus();
       }
@@ -101,13 +115,9 @@ function bindKeyboardEvents() {
   });
 
   document.addEventListener('keyup', (evt) => {
-    if (!isActive) {
+    if (!isKeyCaptureActive) {
       return;
     }
     kb.sendEvent(channel, evt.key, 'keyup');
   });
 }
-
-bindScreenFocusEvents();
-bindMouseEvents();
-bindKeyboardEvents();

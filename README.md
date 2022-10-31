@@ -6,7 +6,7 @@ Related article:
 
 [DIY 一个运维神器 Open IP-KVM](https://zhuanlan.zhihu.com/p/578602475)
 
-[English Version By Google Translate](https://zhuanlan-zhihu-com.translate.goog/p/578602475?_x_tr_sl=auto&_x_tr_tl=zh-CN&_x_tr_hl=en&_x_tr_pto=wapp)
+[English Version By Google Translate](https://zhuanlan-zhihu-com.translate.goog/p/578602475?_x_tr_sl=zh-CN&_x_tr_tl=en)
 
 ## What is IP-KVM
 

@@ -27,7 +27,7 @@ The unit plugs into the Keyboard, Video and Mouse ports of a computer or server 
 * 1080P 30fps video stream
 * Full mouse & keyboard support
 * UI Indicator
-* Remote Paste: Quickly input ASCII characters
+* Remote Paste: Input ASCII sequence
 
 ![screenshot](https://user-images.githubusercontent.com/5763301/198885015-f1cd83d7-6717-410c-8837-68b347f4b29c.png)
 
@@ -39,8 +39,8 @@ The unit plugs into the Keyboard, Video and Mouse ports of a computer or server 
 
 * HDMI-USB capture device
   * Recommendation: `MS2109` [link](https://item.jd.com/100021347850.html)
-  * Input: Up to 3840*2160 30 FPS
-  * Output: Up to 1080P 30 FPS @ MJPEG
+  * Input: Up to 4K 30FPS
+  * Output: Up to 1080P 30FPS @ MJPEG
 * Linux single-board computer
   * Recommendation: [Raspberry Pi 4](https://www.raspberrypi.com/products/raspberry-pi-4-model-b/), `Phicomm N1`
   * Recent linux kernel
@@ -93,8 +93,9 @@ git clone https://github.com/Nihiue/open-ip-kvm.git
 <summary>Install Dependency</summary>
 
 * Build and Install [MJPG-Streamer](https://github.com/jacksonliam/mjpg-streamer)
-  * [How to build](https://www.acmesystems.it/video_streaming)
+  * [How to build MJPG-Streamer](https://www.acmesystems.it/video_streaming)
 * Install Node.js 14.x+
+  * [Install NodeJS on Armbian](https://www.autoptr.top/htmls/i12bretro/0507)
 * Install node app dependency
   * `cd open-ip-kvm && npm install`
 </details>
@@ -125,11 +126,11 @@ git clone https://github.com/Nihiue/open-ip-kvm.git
 How to control
 
 * Mouse
-  * Click anywhere to enter pointer capture mode
+  * Click anywhere to enter `pointer capture` mode
   * Press `ESC` to exit
 * Keyboard
-  * Press `Enter` to enter key capture mode
-  * press `Shift + Esc` to exit
+  * Press `Enter` to enter `key capture` mode
+  * press `Shift + ESC` to exit
 
 ## License
 

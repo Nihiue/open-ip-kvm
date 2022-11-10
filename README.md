@@ -38,7 +38,7 @@ The unit plugs into the Keyboard, Video and Mouse ports of a computer or server 
 ## Hardware Requirements
 
 * HDMI-USB capture device
-  * Recommendation: `MS2109` [link](https://item.jd.com/100021347850.html)
+  * Recommendation: `MS2109` based devices [link](http://en.macrosilicon.com/info.asp?base_id=2&third_id=50)
   * Input: Up to 4K 30FPS
   * Output: Up to 1080P 30FPS @ MJPEG
 * Linux single-board computer
@@ -139,4 +139,6 @@ MIT
 ## Credits
 
 Video stream is powered by [mjpg_streamer](https://github.com/jacksonliam/mjpg-streamer)
+
+For production environment, use [Pi-KVM](https://pikvm.org/)
 

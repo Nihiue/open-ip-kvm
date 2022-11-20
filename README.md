@@ -42,7 +42,7 @@ The unit plugs into the Keyboard, Video and Mouse ports of a computer or server 
   * Input: Up to 4K 30FPS
   * Output: Up to 1080P 30FPS @ MJPEG
 * Linux single-board computer
-  * Recommendation: [Raspberry Pi 4](https://www.raspberrypi.com/products/raspberry-pi-4-model-b/), `Phicomm N1`
+  * Recommendation: `Phicomm N1`, [Raspberry Pi 4](https://www.raspberrypi.com/products/raspberry-pi-4-model-b/) or other models,
   * Recent linux kernel
   * 2+ USB ports
 * Arduino Leonardo [link](https://docs.arduino.cc/hardware/leonardo)
@@ -86,24 +86,16 @@ SSH to linux SBC with your pc.
 
 <details>
 
-<summary>Clone Repo</summary>
-```
-git clone https://github.com/Nihiue/open-ip-kvm.git
-```
-</details>
+<summary>Deploy App and Dependency on Linux SBC</summary>
 
-<details>
-
-<summary>Install Dependency</summary>
-
-* Build and Install [MJPG-Streamer](https://github.com/jacksonliam/mjpg-streamer)
+* Build and install [MJPG-Streamer](https://github.com/jacksonliam/mjpg-streamer)
   * [How to build MJPG-Streamer](https://www.acmesystems.it/video_streaming)
 * Install Node.js 14.x+
   * [Install NodeJS on Armbian](https://www.autoptr.top/htmls/i12bretro/0507)
-* Install node app dependency
+* Clone repo and install its dependency
+  * `git clone https://github.com/Nihiue/open-ip-kvm.git`
   * `cd open-ip-kvm && npm install`
 </details>
-
 
 <details>
 

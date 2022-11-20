@@ -57,28 +57,22 @@ The unit plugs into the Keyboard, Video and Mouse ports of a computer or server 
 
 ## Deploy and Run
 
-### 1. Clone Repo
-```
-git clone https://github.com/Nihiue/open-ip-kvm.git
-```
-
-### 2. Prepare Arduino Leonardo
+### 1. Prepare Arduino Leonardo
 
 <details>
 
 <summary>Upload program</summary>
 
-
-1. Download and install [Arduino IDE](https://www.arduino.cc/en/software/)
-2. Connect leonardo to computer via USB
-3. Open `open-ip-kvm/virt-hid-arduino/virt-hid-arduino.ino`,  click `Sketch/Upload (Ctrl + U)`
-4. Disconnect USB
+1. Download and install [Arduino IDE](https://www.arduino.cc/en/software/) on your PC.
+2. Connect leonardo to PC via USB
+3. Download arduino code file [virt-hid-arduino.ino](https://raw.githubusercontent.com/Nihiue/open-ip-kvm/main/virt-hid-arduino/virt-hid-arduino.ino), Open it with Arduino IDE, then click `Sketch/Upload (Ctrl + U)`
+4. Disconnect leonardo USB
 
 </details>
 
 <details>
 
-<summary>Connect serial port</summary>
+<summary>Reference: How to connect serial port</summary>
 
 ![image](https://user-images.githubusercontent.com/5763301/198872791-cbac6e09-562a-43ae-82fb-a5533461d36b.png)
 
@@ -86,7 +80,17 @@ git clone https://github.com/Nihiue/open-ip-kvm.git
 
 </details>
 
-### 3. Prepare Linux SBC
+### 2. Prepare Linux SBC
+
+SSH to linux SBC with your pc.
+
+<details>
+
+<summary>Clone Repo</summary>
+```
+git clone https://github.com/Nihiue/open-ip-kvm.git
+```
+</details>
 
 <details>
 
@@ -115,7 +119,7 @@ git clone https://github.com/Nihiue/open-ip-kvm.git
 </details>
 
 
-### 4. Run
+### 3. Run
 
 1. Connect HDMI output of target computer to HDMI-USB capture device
 2. Connect target computer to leonardo via USB
@@ -138,7 +142,7 @@ MIT
 
 ## Credits
 
-Video stream is powered by [mjpg_streamer](https://github.com/jacksonliam/mjpg-streamer)
+[mjpg_streamer](https://github.com/jacksonliam/mjpg-streamer)
 
 For production environment, use [Pi-KVM](https://pikvm.org/)
 

@@ -50,7 +50,7 @@ The unit plugs into the Keyboard, Video and Mouse ports of a computer or server 
 * Optional
   * USB-to-TTL Adapter
     * If linux sbc has no built-in serial port
-    * Recommendation: `PL2302`
+    * Recommendation: `PL2303HX`
   * USB Wi-Fi Adapter
     * If linux sbc has no built-in Wi-Fi
 

@@ -23,13 +23,13 @@ The unit plugs into the Keyboard, Video and Mouse ports of a computer or server 
 
 ## Features
 
+[Demo Video](https://www.bilibili.com/video/BV1c841177hF/)
+
 * Web browser as client
 * 1080P 30fps video stream
 * Full mouse & keyboard support
 * UI Indicator
 * Remote Paste: Input ASCII sequence
-
-[Demo Video](https://www.bilibili.com/video/BV1c841177hF/?spm_id_from=333.999.0.0&vd_source=6892e192177dc64b61cd731e9d0187ab)
 
 ![screenshot](https://user-images.githubusercontent.com/5763301/198885015-f1cd83d7-6717-410c-8837-68b347f4b29c.png)
 

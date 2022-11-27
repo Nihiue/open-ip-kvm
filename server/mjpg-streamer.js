@@ -19,12 +19,13 @@ function startMJPGStreamer(opt) {
     shell = spawn('bash', ['-c', cmd]);
 
     shell.stdout.on('data', (data) => {
-      console.log(data);
+      console.log(data.toString('utf-8'));
     });
 
     shell.stderr.on('data', (data) => {
-      console.log(data);
-      if (data.indexOf('HTTP TCP port') > -1) {
+      const str = data.toString('utf-8');
+      console.log(str);
+      if (str.indexOf('HTTP TCP port') > -1) {
         console.log('mjpg_streamer start')
         resolve(shell);
       }

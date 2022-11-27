@@ -22,6 +22,8 @@ new Vue({
     async init() {
       try {
         const config = await this.fetchConfig();
+        document.title = config.app_title;
+
         const streamOk = await this.pingStream(config.mjpg_streamer.stream_port);
         if (!streamOk) {
           throw new Error(
@@ -29,13 +31,12 @@ new Vue({
           );
         }
         this.$channel = await ws.init(
-          `ws://${this.serviceHost}:8000/websocket`
+          `ws://${this.serviceHost}:${config.listen_port}/websocket`
         );
         this.bindKeyHandler();
         this.bindMouseHandler();
 
         this.streamSrc = `http://${this.serviceHost}:${config.mjpg_streamer.stream_port}/?action=stream`;
-        document.title = config.app_title;
       } catch (e) {
         alert(e.toString());
       }

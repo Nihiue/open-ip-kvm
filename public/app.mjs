@@ -21,7 +21,8 @@ new Vue({
   methods: {
     async init() {
       try {
-        const streamOk = await this.pingStream();
+        const config = await this.fetchConfig();
+        const streamOk = await this.pingStream(config.mjpg_streamer.stream_port);
         if (!streamOk) {
           throw new Error(
             'Video stream is not ready, please check mjpeg process'
@@ -33,19 +34,26 @@ new Vue({
         this.bindKeyHandler();
         this.bindMouseHandler();
 
-        this.streamSrc = `http://${this.serviceHost}:8010/?action=stream`;
+        this.streamSrc = `http://${this.serviceHost}:${config.mjpg_streamer.stream_port}/?action=stream`;
+        document.title = config.app_title;
       } catch (e) {
         alert(e.toString());
       }
     },
-    async pingStream() {
+    async pingStream(port) {
       try {
-        const pingRes = await fetch(
-          `http://${this.serviceHost}:8010/?action=snapshot`
-        );
+        const pingRes = await fetch(`http://${this.serviceHost}:${port}/?action=snapshot`);
         return pingRes.status === 200;
       } catch (e) {
         return false;
+      }
+    },
+    async fetchConfig() {
+      try {
+        const res = await fetch('/api/config');
+        return res.json();
+      } catch (e) {
+        return null;
       }
     },
     bindKeyHandler() {

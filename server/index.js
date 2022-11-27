@@ -3,6 +3,9 @@ const url = require('url');
 
 const config = require("./config.json");
 
+config.app_title = config.app_title || 'Open IP-KVM';
+config.mjpg_streamer.stream_port = config.mjpg_streamer.stream_port || 8010;
+
 const ws = require('ws');
 const Koa = require('koa');
 const KoaStaic = require('koa-static');
@@ -40,6 +43,12 @@ async function start() {
 
     const server = app.listen(config.listen_port);
     console.log(`listen on ${config.listen_port}...`);
+
+    app.use(async function router(ctx) {
+      if (ctx.path === '/api/config') {
+        ctx.body = config;
+      }
+    });
 
     const wsInstance = new ws.WebSocketServer({ noServer: true });
     server.on('upgrade', function upgrade(request, socket, head) {

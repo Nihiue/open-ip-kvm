@@ -1,9 +1,11 @@
 {
+  "app_title": "Open IP-KVM",
+  "listen_port": 8000,
+  "serialport": "/dev/ttyUSB0",
   "mjpg_streamer": {
     "device": "/dev/video0",
     "res": "1920x1080",
-    "fps": 30
-  },
-  "listen_port": 8000,
-  "serialport": "/dev/ttyUSB0"
+    "fps": 30,
+    "stream_port": 8010
+  }
 }
